@@ -39,5 +39,10 @@ describe MoviesController do
       post :add_tmdb, {:tmdb_movies => {123 => 1,456 => 1}}
       expect(response).to redirect_to("/movies")
     end
+    it 'should flash a message if no movies are selected to add' do
+      post :add_tmdb, {:tmdb_movies => nil}
+      expect(flash[:notice]).to eq("No movies selected")
+      expect(response).to redirect_to("/movies")
+    end
   end
 end
