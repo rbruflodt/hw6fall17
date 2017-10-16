@@ -62,7 +62,6 @@ class MoviesController < ApplicationController
   end
   
   def search_tmdb
-    puts params[:search_terms]
     if params[:search_terms] != ""
       @movies=Movie.find_in_tmdb(params[:search_terms])
       if @movies
@@ -89,5 +88,4 @@ class MoviesController < ApplicationController
     end
     redirect_to movies_path
   end
-
 end

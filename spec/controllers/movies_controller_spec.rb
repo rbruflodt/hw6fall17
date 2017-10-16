@@ -45,4 +45,40 @@ describe MoviesController do
       expect(response).to redirect_to("/movies")
     end
   end
+  describe 'using the routes' do
+    it 'should add movies to the database' do
+      new_movie = {:movie=>{:title => 'Movie', :rating => 'G', :description => 'Description', :release_date => '2017-1-1'}}
+      expect(Movie).to receive(:create!).with(new_movie[:movie]).and_return(double(new_movie[:movie]))
+      post :create, new_movie
+      expect(flash[:notice]).to eq("Movie was successfully created.")
+      expect(response).to redirect_to("/movies")
+    end
+    it 'should update movies' do
+      movie_params = {:id=>1,:movie=>{:title => 'Movie', :rating => 'G', :description => 'Description', :release_date => '2017-1-1'}}
+      movie = double(movie_params[:movie])
+      expect(Movie).to receive(:find).with("1").and_return(movie)
+      post :edit, movie_params
+      expect(assigns(:movie)).to eq(movie)
+      expect(Movie).to receive(:find).with("1").and_return(movie)
+      expect(movie).to receive(:update_attributes!).with(movie_params[:movie]).and_return(nil)
+      put :update, movie_params
+      expect(flash[:notice]).to eq("Movie was successfully updated.")
+    end 
+    it 'should destroy movies' do
+      movie_params = {:id=>1,:movie=>{:title => 'Movie', :rating => 'G', :description => 'Description', :release_date => '2017-1-1'}}
+      movie = double(movie_params[:movie])
+      expect(Movie).to receive(:find).with("1").and_return(movie)
+      expect(movie).to receive(:destroy)
+      delete :destroy, movie_params
+      expect(flash[:notice]).to eq("Movie 'Movie' deleted.")
+      expect(response).to redirect_to("/movies")
+    end
+    it 'should show movie details' do
+      movie_params = {:id=>1,:movie=>{:title => 'Movie', :rating => 'G', :description => 'Description', :release_date => '2017-1-1'}}
+      movie = double(movie_params[:movie])
+      expect(Movie).to receive(:find).with("1").and_return(movie)
+      get :show, movie_params
+      expect(assigns(:movie)).to eq(movie)
+    end
+  end
 end
